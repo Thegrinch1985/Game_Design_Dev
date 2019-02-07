@@ -20,9 +20,9 @@ var brickRowCount = 3;
 var brickColumnCount = 5;
 var brickWidth = 75;
 var brickHeight = 20;
-var brickPadding = 10;
-var brickOffSetTop = 30;
-var brickOffSetLeft = 30;
+var brickPadding = 20;
+var brickOffSetTop = 25;
+var brickOffSetLeft = 20;
 
 //
 var score = 0;
@@ -85,9 +85,9 @@ function drawBall(cx, cy) {
 //function Score
 function drawScore() {
     cyx.font = "16px Arial";
-    ctx.fillStyle =  "#0095DD";
-    ctx.fillText("Score : " + score, 8 , 20);
-    
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score : " + score, 8, 20);
+
 }
 
 //Draw Paddle
@@ -132,26 +132,11 @@ function update() {
 
     ctx.clearRect(0, 0, myCanvas.height, myCanvas.width);
 
-    x += dx;
-    y += dy;
+    drawBall(x, y);
+    drawPaddle();
+    drawBricks();
+   
 
-    //Detection Collision of Ball and Canvas7
-
-    if (x + dx > 400) {
-        dx = -dx;
-    }
-
-    if (x + dx < 0) {
-        dx = -dx;
-    }
-
-    if (y + dy > 400) {
-        dy = -dy;
-    }
-
-    if (y + dy < 0) {
-        dy = -dy;
-    }
 
 
     //Move Paddle
@@ -160,27 +145,54 @@ function update() {
     } else if (moveLeft && paddleX > 0) {
         paddleX -= PADDLE_DX;
     }
-
-    if (x + dx > paddleX && x + dx < paddleX + PADDLE_WIDTH - myCanvas.Width) {
+    // if (x + dx > paddleX && x + dx < paddleX + PADDLE_WIDTH - myCanvas.Width) {
+    //     dx = -dx;
+    // } else if (y + dy < BALL_RADIUS) {
+    //     dy = -dy;
+    // } else if (y + dy > ctx.height - BALL_RADIUS) {
+    //     if (x > paddleX && x < paddleX + PADDLE_WIDTH)
+    //         dy = -dy;
+    // } else {
+    //     //alert('GAME OVER');
+    //     //document.location.reload();
+    // }
+    
+    // Left and right walls
+    if (x + dx > myCanvas.width - BALL_RADIUS || x + dx < BALL_RADIUS)
         dx = -dx;
-    } else if (y + dy < BALL_RADIUS) {
+
+    // Top
+    if (y + dy < BALL_RADIUS) {
         dy = -dy;
-    } else if (y + dy > ctx.height - BALL_RADIUS) {
-        if (x > paddleX && x < paddleX + PADDLE_WIDTH)
+    }
+    // Bottom
+    else if (y + dy > myCanvas.height - BALL_RADIUS) {
+
+        // Hit paddle
+        if (x > paddleX && x < paddleX + PADDLE_WIDTH) {
             dy = -dy;
-    } else  {
-        //alert('GAME OVER');
-        //document.location.reload();
+        }
+        // Game Over
+        else if (y + dy > myCanvas.height) {
+            //alert('Game Over');
+            //document.location.reload();  
+        }
     }
 
 
 
-    drawBall(x, y);
+
+
+
+
+
+   
+    //collisionDetection();
+
+    x += dx;
+    y += dy;
     requestAnimationFrame(update);
-    drawPaddle();
-    drawBricks()
-    collisionDetection();
-    drawScore();
+    //drawScore();
 }
 
 //Calls update function
