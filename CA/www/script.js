@@ -50,6 +50,7 @@ gameScene.init = function() {
 // executed once, after assets were loaded
 gameScene.create = function() {
  
+  
    // background
    let bg = this.add.sprite(0, 0, 'black');
    //Rail 1 & 2
@@ -106,6 +107,8 @@ gameScene.create = function() {
  
   // scale down
   this.player.setScale(0.050);
+
+
 
     // goal
     this.treasure = this.add.sprite(this.sys.game.config.width - 80, this.sys.game.config.height / 2, 'treasure');
