@@ -4,8 +4,8 @@
 // our game's configuration
 var config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 300,
+  height: 800,
   physics: {
       default: 'arcade',
       arcade: {
@@ -22,7 +22,7 @@ var config = {
 
 let player;
 let platforms;
-let donk
+let donk;
 
 // some parameters for our scene (our own customer variables - these are NOT part of the Phaser API)
 let playerSpeed = 1.5;
@@ -40,7 +40,7 @@ let game = new Phaser.Game(config);
 function preload() {
 
   // load images
-  this.load.image('background', 'assets/Level1-1Stage.png');
+  //this.load.image('background', 'assets/Level1-1Stage.png');
   this.load.image('black', 'assets/blot.jpg');
   //Rails
   this.load.image('Rail', 'assets/StagePlatform.jpg');
@@ -59,8 +59,9 @@ function preload() {
   //Ladders 
   this.load.image('BigLadder', 'assets/Ladder.png');
   this.load.image('SmallLadder', 'assets/Ladder.png');
-  //Characters
-  this.load.image('player', 'assets/mario.jpg');
+    //Characters
+  this.load.spritesheet('mario', 'assets/mario.png', { frameWidth: 4800, frameHeight: 4800 });
+  this.load.spritesheet('DK', 'assets/DKS.png', 32,  48, 13);
   this.load.image('donk', 'assets/dk.png');
   //this.load.image('treasure', 'assets/treasure.png');
 };
@@ -70,25 +71,25 @@ function preload() {
 function create() {
   platforms = this.physics.add.staticGroup();
   // background
-  let bg = this.add.sprite(0, 0, 'black');
+  let bg = this.add.sprite(200, 400, 'black');
   //Rails
   //Bottom to Top
-  platforms.create(100, 260, 'Rail').setScale(2).refreshBody();
+  platforms.create(100, 400, 'Rail').setScale(2).refreshBody();
   //Bottom
-  platforms.create(55, 220, 'Rail2');
-  platforms.create(145, 220, 'Rail3');
+  platforms.create(55, 340, 'Rail2');
+  platforms.create(145, 340, 'Rail3');
   //2nd From bottom
-  platforms.create(55, 180, 'Rail4');
-  platforms.create(125, 180, 'Rail5');
+  platforms.create(190, 280, 'Rail4');
+  platforms.create(125, 280, 'Rail5');
   //3rd from bottom
-  platforms.create(150, 140, 'Rail6');
-  platforms.create(155, 140, 'Rail7');
+  platforms.create(55, 220, 'Rail6');
+  platforms.create(155, 220, 'Rail7');
   //4th 
-  platforms.create(55, 100, 'Rail8');
-  platforms.create(125, 100, 'Rail9');
+  platforms.create(190, 160, 'Rail8');
+  platforms.create(125, 160, 'Rail9');
   //5th
-  platforms.create(150, 60, 'Rail10');
-  platforms.create(155, 60, 'Rail11');
+  platforms.create(55, 80, 'Rail10');
+  platforms.create(155, 80, 'Rail11');
 
   //Ladders 1 
   let Ladder1 = this.add.sprite(115, 85, 'BigLadder')
@@ -101,24 +102,41 @@ function create() {
   //Ladder 3 
   let Ladder5 = this.add.sprite(135, 85, 'SmallLadder');
 
+  //Bottom Level Ladders
+  let Ladder6 = this.add.sprite(115, 380, 'SmallLadder');
+
+  let Ladder11 = this.add.sprite(195, 340, 'BigLadder')
+  let Ladder12 = this.add.sprite(195, 360, 'SmallLadder');
+  let Ladder13 = this.add.sprite(195, 380, 'SmallLadder');
+//Mario 
+  mario = this.physics.add.sprite(5, 345, 'mario');
+  mario.setBounce(0.2);
+  mario.setCollideWorldBounds(true);
+  
+  this.physics.add.collider(mario, platforms);
+
+  DK = this.physics.add.sprite(5, 55, 'DK');
+  DK.setBounce(0.2);
+  DK.setCollideWorldBounds(true);
+  
+  this.physics.add.collider(DK, platforms);
+
+  
   // Mario
-  player = this.physics.add.sprite(5, 245, 'player');
+  //player = this.physics.add.sprite(5, 345, 'player');
   //this.player = this.physics.add.sprite(5,210, 'player');
   //Physics
   //player.setBounce(0.2);
   //player.setCollideWorldBounds(true);
   // scale down
-  player.setScale(0.025);
+  //player.setScale(0.025);
    // player
   donk = this.add.sprite(160, 40, 'donk');
    // scale down
   donk.setScale(0.1);
 
-  this.physics.add.collider(player, platforms);
 
   //  Player physics properties. Give the little guy a slight bounce.
-  player.setBounce(0.2);
-  player.setCollideWorldBounds(true);
 
 
   bg.setOrigin(0, 0);
@@ -145,7 +163,8 @@ this.anims.create({
 });
 */
 cursors = this.input.keyboard.createCursorKeys();
-this.physics.add.collider(player, platforms);
+this.physics.add.collider(mario, platforms);
+this.physics.add.collider(DK, platforms);
 
 }
 
@@ -158,27 +177,27 @@ function update() {
   
   if (cursors.left.isDown)
   {
-      player.setVelocityX(-160);
+      mario.setVelocityX(-75);
 
       //player.anims.play('left', true);
   }
 
   else if (cursors.right.isDown)
   {
-      player.setVelocityX(160);
+      mario.setVelocityX(75);
 
       //player.anims.play('right', true);
   }
   else
   {
-      player.setVelocityX(0);
+      mario.setVelocityX(0);
 
       //player.anims.play('turn');
   }
 
-  if (cursors.up.isDown && player.body.touching.down)
+  if (cursors.up.isDown && mario.body.touching.down)
   {
-      player.setVelocityY(-330);
+      mario.setVelocityY(-150);
   }
   // //check for active input
   // if (this.input.activePointer.isDown) {
