@@ -1,31 +1,43 @@
 // create a new scene named "Game"
-let gameScene = new Phaser.Scene('Game');
+//let gameScene = new Phaser.Scene('Game');
 
 // our game's configuration
-let config = {
-  type: Phaser.AUTO, //Phaser will decide how to render our game (WebGL or Canvas)
-  width: 260, // game width
-  height: 360, // game height
+var config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
   physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: {
-        y: 300
-      },
-      debug: false
-    }
+      default: 'arcade',
+      arcade: {
+          gravity: { y: 300 },
+          debug: false
+      }
   },
-  scene: gameScene // our newly created scene
+  scene: {
+      preload: preload,
+      create: create,
+      update: update
+  }
 };
-var player;
-var platforms;
+
+let player;
+let platforms;
+let donk
+
+// some parameters for our scene (our own customer variables - these are NOT part of the Phaser API)
+let playerSpeed = 1.5;
+let enemyMaxY = 280;
+let enemyMinY = 80;
+let gameOver = false;
+
+
 // create the game, and pass it the configuration
 let game = new Phaser.Game(config);
 
 
 
 // load asset files for our game
-gameScene.preload = function () {
+function preload() {
 
   // load images
   this.load.image('background', 'assets/Level1-1Stage.png');
@@ -52,19 +64,10 @@ gameScene.preload = function () {
   this.load.image('donk', 'assets/dk.png');
   //this.load.image('treasure', 'assets/treasure.png');
 };
-// some parameters for our scene (our own customer variables - these are NOT part of the Phaser API)
-gameScene.init = function () {
-  this.playerSpeed = 1.5;
-  this.enemyMaxY = 280;
-  this.enemyMinY = 80;
-}
-
-
-
 
 
 // executed once, after assets were loaded
-gameScene.create = function () {
+function create() {
   platforms = this.physics.add.staticGroup();
   // background
   let bg = this.add.sprite(0, 0, 'black');
@@ -99,23 +102,28 @@ gameScene.create = function () {
   let Ladder5 = this.add.sprite(135, 85, 'SmallLadder');
 
   // Mario
-  this.player = this.add.sprite(5, 245, 'player');
+  player = this.physics.add.sprite(5, 245, 'player');
   //this.player = this.physics.add.sprite(5,210, 'player');
   //Physics
   //player.setBounce(0.2);
   //player.setCollideWorldBounds(true);
   // scale down
-  this.player.setScale(0.025);
+  player.setScale(0.025);
    // player
-   this.donk = this.add.sprite(160, 40, 'donk');
+  donk = this.add.sprite(160, 40, 'donk');
    // scale down
-   this.donk.setScale(0.1);
+  donk.setScale(0.1);
 
   this.physics.add.collider(player, platforms);
+
+  //  Player physics properties. Give the little guy a slight bounce.
+  player.setBounce(0.2);
+  player.setCollideWorldBounds(true);
 
 
   bg.setOrigin(0, 0);
 
+  /*
   this.anims.create({
     key: 'left',
     frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
@@ -135,33 +143,37 @@ this.anims.create({
     frameRate: 10,
     repeat: -1
 });
-
+*/
 cursors = this.input.keyboard.createCursorKeys();
 this.physics.add.collider(player, platforms);
 
 }
 
 // executed on every frame (60 times per second)
-gameScene.update = function () {
+function update() {
+
+  if (gameOver) {
+    return;
+  }
   
   if (cursors.left.isDown)
   {
       player.setVelocityX(-160);
 
-      player.anims.play('left', true);
+      //player.anims.play('left', true);
   }
 
   else if (cursors.right.isDown)
   {
       player.setVelocityX(160);
 
-      player.anims.play('right', true);
+      //player.anims.play('right', true);
   }
   else
   {
       player.setVelocityX(0);
 
-      player.anims.play('turn');
+      //player.anims.play('turn');
   }
 
   if (cursors.up.isDown && player.body.touching.down)
@@ -206,8 +218,3 @@ gameScene.update = function () {
 //   enemy.speed = Math.random() * 2 + 1;
 // }, this);
 // // end the game
-gameScene.gameOver = function () {
-
-  // restart the scene
-  this.scene.restart();
-}
