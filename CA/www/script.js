@@ -7,25 +7,27 @@ var config = {
   width: 300,
   height: 800,
   physics: {
-      default: 'arcade',
-      arcade: {
-          gravity: { y: 300 },
-          debug: false
-      }
+    default: 'arcade',
+    arcade: {
+      gravity: {
+        y: 300
+      },
+      debug: false
+    }
   },
   scene: {
-      preload: preload,
-      create: create,
-      update: update
+    preload: preload,
+    create: create,
+    update: update
   }
 };
 
-let player;
+let mario;
 let platforms;
 let donk;
 
 // some parameters for our scene (our own customer variables - these are NOT part of the Phaser API)
-let playerSpeed = 1.5;
+let marioSpeed = 1.5;
 let enemyMaxY = 280;
 let enemyMinY = 80;
 let gameOver = false;
@@ -56,13 +58,54 @@ function preload() {
   this.load.image('Rail10', 'assets/StagePlatform.jpg');
   this.load.image('Rail11', 'assets/StagePlatform.jpg');
   this.load.image('Rail12', 'assets/StagePlatform.jpg');
+
+  this.load.image('fire1', 'assets/115.png');
+  this.load.image('fire2', 'assets/116.png');
+  this.load.image('fire3', 'assets/118.png');
+  this.load.image('fire4', 'assets/119.png');
+
+
+  this.load.image('Barrel', 'assets/113.png');
+
+
+  //Donkey Kong 
+  this.load.image('DK1', 'assets/34.png');
+  this.load.image('DK2', 'assets/35.png');
+  this.load.image('DK3', 'assets/36.png');
+  this.load.image('DK4', 'assets/37.png');
+  this.load.image('DK5', 'assets/37.png');
+  this.load.image('DK6', 'assets/38.png');
+  this.load.image('DK7', 'assets/41.png');
+  this.load.image('DK8', 'assets/42.png');
+
   //Ladders 
   this.load.image('BigLadder', 'assets/Ladder.png');
   this.load.image('SmallLadder', 'assets/Ladder.png');
-    //Characters
-  this.load.spritesheet('mario', 'assets/mario.png', { frameWidth: 4800, frameHeight: 4800 });
-  this.load.spritesheet('DK', 'assets/DKS.png', 32,  48, 13);
-  this.load.image('donk', 'assets/dk.png');
+  //Characters
+  this.load.spritesheet('mario', 'assets/mario.png', {
+    frameWidth: 16,
+    frameHeight: 16
+  });
+  this.load.spritesheet('DK', 'assets/DonkeyKongSprites.png', {
+    frameWidth: 48,
+    frameHeight: 48
+  });
+  this.load.spritesheet('Princess', 'assets/DonkeyKongSprites.png', {
+    frameWidth: 32,
+    frameHeight: 48
+  });
+  this.load.spritesheet('FireBin', 'assets/DonkeyKongSprites2.png', {
+    frameWidth: 16,
+    frameHeight: 31
+  });
+  this.load.spritesheet('Barrels', 'assets/DonkeyKongSprites.png', {
+    frameWidth: 32,
+    frameHeight: 48
+  });
+  //this.load.spritesheet('DK', 'assets/DKS.png', 32, 48, 13);
+  //this.load.image('donk', 'assets/dk.png');
+
+ //
   //this.load.image('treasure', 'assets/treasure.png');
 };
 
@@ -108,20 +151,117 @@ function create() {
   let Ladder11 = this.add.sprite(195, 340, 'BigLadder')
   let Ladder12 = this.add.sprite(195, 360, 'SmallLadder');
   let Ladder13 = this.add.sprite(195, 380, 'SmallLadder');
-//Mario 
-  mario = this.physics.add.sprite(5, 345, 'mario');
+ 
+
+  ladder1234 =this.physics.add.sprite(135,340,'BigLadder');
+  ladder1234.setBounce(0.2);
+  ladder1234.setCollideWorldBounds(true);
+  this.physics.add.collider(ladder1234, platforms);
+  
+
+
+
+  //Mario
+  mario = this.physics.add.sprite(45, 345, 'mario', 0);
   mario.setBounce(0.2);
   mario.setCollideWorldBounds(true);
-  
+  this.anims.create({
+    key: 'left',
+    frames: this.anims.generateFrameNumbers('mario', {
+      start: 8,
+      end: 13
+    }),
+    frameRate: 10,
+    repeat: -1
+  });
+
+  this.anims.create({
+    key: 'right',
+    frames: this.anims.generateFrameNumbers('mario', {
+      start: 1,
+      end: 6
+    }),
+    frameRate: 10,
+    repeat: -1
+  });
+  this.anims.create({
+    key: 'turn',
+    frames: [{
+      key: 'mario',
+      frame: 0
+    }],
+    frameRate: 20
+  });
+
+
   this.physics.add.collider(mario, platforms);
 
-  DK = this.physics.add.sprite(5, 55, 'DK');
+
+//Donkey Kong Images 
+
+  DK = this.physics.add.sprite(50, 55, 'DK1');
   DK.setBounce(0.2);
   DK.setCollideWorldBounds(true);
-  
   this.physics.add.collider(DK, platforms);
 
-  
+  this.anims.create({
+    key: 'play1',
+    frames: [
+        { key: 'DK1' },
+        { key: 'DK2' },
+        { key: 'DK3' },
+        { key: 'DK4'},
+        { key: 'DK5' },
+        { key: 'DK6' },
+        { key: 'DK7' },
+        { key: 'DK8' , duration: 50 }
+    ],
+    frameRate: 3,
+    repeat: -1
+});
+DK.play('play1')
+
+//Princess Actions 
+    this.anims.create({
+        key: 'play',
+        frames: this.anims.generateFrameNumbers('Princess', {
+          start: 0,
+          end: 3
+        }),
+        frameRate: 1,
+        repeat: -1
+    });
+    Princess = this.physics.add.sprite(150, 55, 'Princess',0);
+    Princess.setBounce(0.2);
+    Princess.setCollideWorldBounds(true);
+    this.physics.add.collider(Princess, platforms);
+    Princess.play('play');
+    
+ //Fire
+ this.anims.create({
+  key: 'play2',
+  frames: [
+      { key: 'fire1' },
+      { key: 'fire2' },
+      { key: 'fire3' },
+      { key: 'fire4', duration: 50 }
+  ],
+  frameRate: 8,
+  repeat: -1
+});
+    fire1 = this.physics.add.sprite(5, 345, 'fire1');
+    fire1.setBounce(0.2);
+    fire1.setCollideWorldBounds(true);
+    this.physics.add.collider(fire1, platforms);
+    fire1.play('play2');
+    
+    //Barrell
+    Barrel = this.physics.add.sprite(0, 0, 'Barrel');
+    Barrel.setBounce(0.2);
+    Barrel.setCollideWorldBounds(true);
+    this.physics.add.collider(Barrel, platforms);
+
+
   // Mario
   //player = this.physics.add.sprite(5, 345, 'player');
   //this.player = this.physics.add.sprite(5,210, 'player');
@@ -130,10 +270,10 @@ function create() {
   //player.setCollideWorldBounds(true);
   // scale down
   //player.setScale(0.025);
-   // player
-  donk = this.add.sprite(160, 40, 'donk');
-   // scale down
-  donk.setScale(0.1);
+  // player
+  //donk = this.add.sprite(160, 40, 'donk');
+  // scale down
+  //donk.setScale(0.1);
 
 
   //  Player physics properties. Give the little guy a slight bounce.
@@ -162,9 +302,9 @@ this.anims.create({
     repeat: -1
 });
 */
-cursors = this.input.keyboard.createCursorKeys();
-this.physics.add.collider(mario, platforms);
-this.physics.add.collider(DK, platforms);
+  cursors = this.input.keyboard.createCursorKeys();
+  this.physics.add.collider(mario, platforms);
+  this.physics.add.collider(DK, platforms);
 
 }
 
@@ -174,30 +314,23 @@ function update() {
   if (gameOver) {
     return;
   }
-  
-  if (cursors.left.isDown)
-  {
-      mario.setVelocityX(-75);
 
-      //player.anims.play('left', true);
+  if (cursors.left.isDown) {
+    mario.setVelocityX(-75);
+
+    mario.anims.play('left', true);
+  } else if (cursors.right.isDown) {
+    mario.setVelocityX(75);
+
+    mario.anims.play('right', true);
+  } else {
+    mario.setVelocityX(0);
+
+    mario.anims.play('turn');
   }
 
-  else if (cursors.right.isDown)
-  {
-      mario.setVelocityX(75);
-
-      //player.anims.play('right', true);
-  }
-  else
-  {
-      mario.setVelocityX(0);
-
-      //player.anims.play('turn');
-  }
-
-  if (cursors.up.isDown && mario.body.touching.down)
-  {
-      mario.setVelocityY(-150);
+  if (cursors.up.isDown && mario.body.touching.down) {
+    mario.setVelocityY(-150);
   }
   // //check for active input
   // if (this.input.activePointer.isDown) {
