@@ -81,6 +81,16 @@ function preload() {
   //Ladders 
   this.load.image('BigLadder', 'assets/Ladder.png');
   this.load.image('SmallLadder', 'assets/Ladder.png');
+
+  //Barrels
+
+  this.load.image('B1', 'assets/145.png');
+  this.load.image('B2', 'assets/146.png');
+  this.load.image('B3', 'assets/147.png');
+  this.load.image('B4', 'assets/148.png');
+  this.load.image('B5', 'assets/149.png');
+
+
   //Characters
   this.load.spritesheet('mario', 'assets/mario.png', {
     frameWidth: 16,
@@ -157,8 +167,28 @@ function create() {
   ladder1234.setBounce(0.2);
   ladder1234.setCollideWorldBounds(true);
   this.physics.add.collider(ladder1234, platforms);
-  
 
+
+  //bARRELS
+
+  
+  Barrelling =this.physics.add.sprite(100,55,'B5');
+  Barrelling.setBounce(0.2);
+  Barrelling.setCollideWorldBounds(true);
+  this.physics.add.collider(  Barrelling, platforms);
+
+  this.anims.create({
+    key: 'play4',
+    frames: [
+        { key: 'B1' },
+        { key: 'B2' },
+        { key: 'B3' },
+        { key: 'B4' , duration: 50 }
+    ],
+    frameRate: 8,
+    repeat: -1
+  });
+  Barrelling.play('play4');
 
 
   //Mario
