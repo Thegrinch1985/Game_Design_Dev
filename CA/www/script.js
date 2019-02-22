@@ -122,6 +122,18 @@ function preload() {
 
 // executed once, after assets were loaded
 function create() {
+
+  this.data.set('lives', 3);
+  this.data.set('level', 1);
+  this.data.set('High Score', 2000);
+
+  var text = this.add.text(200, 15, '', { font: '12px Courier', fill: '#00ff00' });
+
+  text.setText([
+      'Level: ' + this.data.get('level'),
+      'Lives: ' + this.data.get('lives'),
+      'Score: ' + this.data.get('score')
+  ]);
   platforms = this.physics.add.staticGroup();
   // background
   let bg = this.add.sprite(200, 400, 'black');
