@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="28" height="36" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" name="DonkeyKong8BIT" tilewidth="8" tileheight="8" tilecount="1044" columns="29">
+  <image source="Level1-1StageBroken.png" width="237" height="289"/>
+ </tileset>
+</map>

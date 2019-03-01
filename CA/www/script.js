@@ -4,8 +4,8 @@
 // our game's configuration
 var config = {
   type: Phaser.AUTO,
-  width: 300,
-  height: 800,
+  width: 290,
+  height: 350,
   physics: {
     default: 'arcade',
     arcade: {
@@ -31,7 +31,7 @@ let marioSpeed = 1.5;
 let enemyMaxY = 280;
 let enemyMinY = 80;
 let gameOver = false;
-
+var map;
 
 // create the game, and pass it the configuration
 let game = new Phaser.Game(config);
@@ -39,25 +39,16 @@ let game = new Phaser.Game(config);
 
 
 // load asset files for our game
-function preload() {
 
-  // load images
-  //this.load.image('background', 'assets/Level1-1Stage.png');
-  this.load.image('black', 'assets/blot.jpg');
-  //Rails
-  this.load.image('Rail', 'assets/StagePlatform.jpg');
-  this.load.image('Rail1', 'assets/StagePlatform.jpg');
-  this.load.image('Rail2', 'assets/StagePlatform.jpg');
-  this.load.image('Rail3', 'assets/StagePlatform.jpg');
-  this.load.image('Rail4', 'assets/StagePlatform.jpg');
-  this.load.image('Rail5', 'assets/StagePlatform.jpg');
-  this.load.image('Rail6', 'assets/StagePlatform.jpg');
-  this.load.image('Rail7', 'assets/StagePlatform.jpg');
-  this.load.image('Rail8', 'assets/StagePlatform.jpg');
-  this.load.image('Rail9', 'assets/StagePlatform.jpg');
-  this.load.image('Rail10', 'assets/StagePlatform.jpg');
-  this.load.image('Rail11', 'assets/StagePlatform.jpg');
-  this.load.image('Rail12', 'assets/StagePlatform.jpg');
+
+  function preload() {
+
+  this.load.image("tiles", 'assets/Level1-1StageBroken.png')
+  this.load.tilemapTiledJSON('map', 'assets/DK8BIT.json');
+ 
+
+
+
 
   this.load.image('fire1', 'assets/115.png');
   this.load.image('fire2', 'assets/116.png');
@@ -67,7 +58,9 @@ function preload() {
 
   this.load.image('Barrel', 'assets/113.png');
 
-
+//Load The Map 
+  //this.load.image('tiles','assets/Level1-1StageMASTER.png');
+  //var platformTiles = 
   //Donkey Kong 
   this.load.image('DK1', 'assets/34.png');
   this.load.image('DK2', 'assets/35.png');
@@ -79,8 +72,8 @@ function preload() {
   this.load.image('DK8', 'assets/42.png');
 
   //Ladders 
-  this.load.image('BigLadder', 'assets/Ladder.png');
-  this.load.image('SmallLadder', 'assets/Ladder.png');
+  // this.load.image('BigLadder', 'assets/Ladder.png');
+  // this.load.image('SmallLadder', 'assets/Ladder.png');
 
   //Barrels
 
@@ -119,14 +112,53 @@ function preload() {
   //this.load.image('treasure', 'assets/treasure.png');
 };
 
+var Enemy = new Phaser.Class({
+ 
+  Extends: Phaser.GameObjects.Image,
 
+  initialize:
+
+  function Enemy (scene)
+  {
+      Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'enemy');
+
+  },
+  update: function (time, delta)
+  {
+                // move the t point along the path, 0 is the start and 0 is the end
+                this.follower.t += ENEMY_SPEED * delta;
+            
+                // get the new x and y coordinates in vec
+                path.getPoint(this.follower.t, this.follower.vec);
+                
+                // update enemy x and y to the newly obtained x and y
+                this.setPosition(this.follower.vec.x, this.follower.vec.y);
+     
+                // if we have reached the end of the path, remove the enemy
+                if (this.follower.t >= 1)
+                {
+                    this.setActive(false);
+                    this.setVisible(false);
+  }
+
+});
 // executed once, after assets were loaded
 function create() {
+  
+  //map = this.add.tilemap('map');
+    // When loading a CSV map, make sure to specify the tileWidth and tileHeight!
+    const map = this.make.tilemap({ key: "map", tileWidth: 8, tileHeight: 8 });
+    const tileset = map.addTilesetImage("DK8BIT","tiles");
+    const layer = map.createDynamicLayer(0, tileset); // layer index, tileset, x, y
+  //map = this.make.tilemap({key: 'map'});
 
   this.data.set('lives', 3);
   this.data.set('level', 1);
   this.data.set('High Score', 2000);
-
+  //layer.setCollisionBetween('mario');
+  layer.setCollisionByProperty({ collides: true });
+  layer.setScale(1.25, 1.25);
+  //layer.setCollisionBetween('mario');
   var text = this.add.text(200, 15, '', { font: '12px Courier', fill: '#00ff00' });
 
   text.setText([
@@ -139,46 +171,31 @@ function create() {
   let bg = this.add.sprite(200, 400, 'black');
   //Rails
   //Bottom to Top
-  platforms.create(100, 400, 'Rail').setScale(2).refreshBody();
-  //Bottom
-  platforms.create(55, 340, 'Rail2');
-  platforms.create(145, 340, 'Rail3');
-  //2nd From bottom
-  platforms.create(190, 280, 'Rail4');
-  platforms.create(125, 280, 'Rail5');
-  //3rd from bottom
-  platforms.create(55, 220, 'Rail6');
-  platforms.create(155, 220, 'Rail7');
-  //4th 
-  platforms.create(190, 160, 'Rail8');
-  platforms.create(125, 160, 'Rail9');
-  //5th
-  platforms.create(55, 80, 'Rail10');
-  platforms.create(155, 80, 'Rail11');
+
 
   //Ladders 1 
-  let Ladder1 = this.add.sprite(115, 85, 'BigLadder')
-  let Ladder2 = this.add.sprite(115, 70, 'SmallLadder');
-  let Ladder22 = this.add.sprite(115, 50, 'SmallLadder');
-  //Ladders 2
-  let Ladder3 = this.add.sprite(95, 85, 'BigLadder')
-  let Ladder4 = this.add.sprite(95, 70, 'SmallLadder');
-  let Ladder23 = this.add.sprite(95, 50, 'SmallLadder');
-  //Ladder 3 
-  let Ladder5 = this.add.sprite(135, 85, 'SmallLadder');
+  // let Ladder1 = this.add.sprite(115, 85, 'BigLadder')
+  // let Ladder2 = this.add.sprite(115, 70, 'SmallLadder');
+  // let Ladder22 = this.add.sprite(115, 50, 'SmallLadder');
+  // //Ladders 2
+  // let Ladder3 = this.add.sprite(95, 85, 'BigLadder')
+  // let Ladder4 = this.add.sprite(95, 70, 'SmallLadder');
+  // let Ladder23 = this.add.sprite(95, 50, 'SmallLadder');
+  // //Ladder 3 
+  // let Ladder5 = this.add.sprite(135, 85, 'SmallLadder');
 
-  //Bottom Level Ladders
-  let Ladder6 = this.add.sprite(115, 380, 'SmallLadder');
+  // //Bottom Level Ladders
+  // let Ladder6 = this.add.sprite(115, 380, 'SmallLadder');
 
-  let Ladder11 = this.add.sprite(195, 340, 'BigLadder')
-  let Ladder12 = this.add.sprite(195, 360, 'SmallLadder');
-  let Ladder13 = this.add.sprite(195, 380, 'SmallLadder');
+  // let Ladder11 = this.add.sprite(195, 340, 'BigLadder')
+  // let Ladder12 = this.add.sprite(195, 360, 'SmallLadder');
+  // let Ladder13 = this.add.sprite(195, 380, 'SmallLadder');
  
 
-  ladder1234 =this.physics.add.sprite(135,340,'BigLadder');
-  ladder1234.setBounce(0.2);
-  ladder1234.setCollideWorldBounds(true);
-  this.physics.add.collider(ladder1234, platforms);
+  // ladder1234 =this.physics.add.sprite(135,340,'BigLadder');
+  // ladder1234.setBounce(0.2);
+  // ladder1234.setCollideWorldBounds(true);
+  // this.physics.add.collider(ladder1234, platforms);
 
 
   //bARRELS
@@ -202,9 +219,25 @@ function create() {
   });
   Barrelling.play('play4');
 
+      // this graphics element is only for visualization, 
+    // its not related to our path
+    var graphics = this.add.graphics();    
+    
+    // the path for our enemies
+    // parameters are the start x and y of our path
+    path = this.add.path(96, -32);
+    path.lineTo(96, 164);
+    path.lineTo(480, 164);
+    path.lineTo(480, 544);
+    
+    graphics.lineStyle(3, 0xffffff, 1);
+    // visualize the path
+    path.draw(graphics);
+ 
+
 
   //Mario
-  mario = this.physics.add.sprite(45, 345, 'mario', 0);
+  mario = this.physics.add.sprite(45, 305, 'mario', 0);
   mario.setBounce(0.2);
   mario.setCollideWorldBounds(true);
   this.anims.create({
@@ -236,16 +269,14 @@ function create() {
   });
 
 
-  this.physics.add.collider(mario, platforms);
-
 
 //Donkey Kong Images 
 
   DK = this.physics.add.sprite(50, 55, 'DK1');
-  DK.setBounce(0.2);
+  DK.setBounce(.5);
   DK.setCollideWorldBounds(true);
-  this.physics.add.collider(DK, platforms);
-
+  this.physics.add.collider(DK, layer);
+  //layer.setCollisionBetween(19, 44);
   this.anims.create({
     key: 'play1',
     frames: [
@@ -274,7 +305,7 @@ DK.play('play1')
         repeat: -1
     });
     Princess = this.physics.add.sprite(150, 55, 'Princess',0);
-    Princess.setBounce(0.2);
+    Princess.setBounce(0.01);
     Princess.setCollideWorldBounds(true);
     this.physics.add.collider(Princess, platforms);
     Princess.play('play');
@@ -291,17 +322,17 @@ DK.play('play1')
   frameRate: 8,
   repeat: -1
 });
-    fire1 = this.physics.add.sprite(5, 345, 'fire1');
-    fire1.setBounce(0.2);
+    fire1 = this.physics.add.sprite(15, 305, 'fire1');
+    fire1.setBounce(0.1);
     fire1.setCollideWorldBounds(true);
     this.physics.add.collider(fire1, platforms);
     fire1.play('play2');
     
     //Barrell
     Barrel = this.physics.add.sprite(0, 0, 'Barrel');
-    Barrel.setBounce(0.2);
+    Barrel.setBounce(.1);
     Barrel.setCollideWorldBounds(true);
-    this.physics.add.collider(Barrel, platforms);
+    this.physics.add.collider(Barrel, layer);
 
 
   // Mario
@@ -319,8 +350,14 @@ DK.play('play1')
 
 
   //  Player physics properties. Give the little guy a slight bounce.
-
-
+/*
+  const debugGraphics = this.add.graphics().setAlpha(0.75);
+  layer.renderDebug(debugGraphics, {
+    tileColor: null, // Color of non-colliding tiles
+    collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+  });
+*/
   bg.setOrigin(0, 0);
 
   /*
@@ -344,10 +381,14 @@ this.anims.create({
     repeat: -1
 });
 */
-  cursors = this.input.keyboard.createCursorKeys();
-  this.physics.add.collider(mario, platforms);
-  this.physics.add.collider(DK, platforms);
 
+  cursors = this.input.keyboard.createCursorKeys();
+
+  this.physics.add.collider(mario, layer);
+  this.physics.add.collider(Princess, layer);
+  this.physics.add.collider(DK, layer);
+  this.physics.add.collider(Barrelling, layer);
+  this.physics.add.collider(fire1, layer);
 }
 
 // executed on every frame (60 times per second)
@@ -365,14 +406,18 @@ function update() {
     mario.setVelocityX(75);
 
     mario.anims.play('right', true);
-  } else {
+  } else if (cursors.up.isDown) {
+    mario.setVelocityY(75);
+
+    mario.anims.play('right', true);
+  }else {
     mario.setVelocityX(0);
 
     mario.anims.play('turn');
   }
 
   if (cursors.up.isDown && mario.body.touching.down) {
-    mario.setVelocityY(-150);
+    mario.setVelocityY(150);
   }
   // //check for active input
   // if (this.input.activePointer.isDown) {

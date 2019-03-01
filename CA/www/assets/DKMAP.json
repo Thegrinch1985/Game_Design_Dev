@@ -1,0 +1,40 @@
+{ "height":9,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[8, 8, 8, 8, 8, 6, 7, 8, 9, 10, 11, 12, 8, 8, 15, 16, 17, 18, 19, 12, 12, 22, 23, 26, 26, 26, 27, 28, 29, 30, 26, 32, 33, 26, 35, 36, 37, 40, 40, 40, 41, 42, 43, 44, 45, 26, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63],
+         "height":9,
+         "id":1,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":7,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":2,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.2.2",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "columns":7,
+         "firstgid":1,
+         "image":"Level1-1StageMASTER.png",
+         "imageheight":289,
+         "imagewidth":237,
+         "margin":0,
+         "name":"dk",
+         "spacing":0,
+         "tilecount":63,
+         "tileheight":32,
+         "tilewidth":32
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":1.2,
+ "width":7
+}

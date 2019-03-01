@@ -1,0 +1,14 @@
+{ "columns":7,
+ "image":"Level1-1StageMASTER.png",
+ "imageheight":289,
+ "imagewidth":237,
+ "margin":0,
+ "name":"Donk",
+ "spacing":0,
+ "tilecount":63,
+ "tiledversion":"1.2.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":1.2
+}
