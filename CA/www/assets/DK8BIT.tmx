@@ -1188,7 +1188,7 @@
    </properties>
   </tile>
  </tileset>
- <layer id="1" name="Tile Layer 1" width="28" height="36">
+ <layer id="1" name="Background" width="28" height="36">
   <properties>
    <property name="COLLIDES" type="bool" value="false"/>
   </properties>
