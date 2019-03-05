@@ -188,6 +188,7 @@ function create() {
     const Ladders = map.createDynamicLayer('Ladders', tileset, 0,0);
   //map = this.make.tilemap({key: 'map'});
   Platforms.setCollisionByExclusion([-1]);
+  //Ladders.setCollisionByExclusion([-1]);
   this.data.set('lives', 3);
   this.data.set('level', 1);
   this.data.set('High Score', 2000);
@@ -195,7 +196,7 @@ function create() {
   layer.setCollisionByProperty({ collides: true });
   //layer.setScale(1.25, 1.25);
   //layer.setCollisionBetween('mario');
-  var text = this.add.text(200, 15, '', { font: '12px Courier', fill: '#00ff00' });
+  var text = this.add.text(200, 315, '', { font: '12px Courier', fill: '#00ff00' });
 
   text.setText([
       'Level: ' + this.data.get('level'),
@@ -246,6 +247,7 @@ function create() {
     path.lineTo(605, 835);
     path.lineTo(605, 925);
     path.lineTo(105, 925);
+    
     //path.lineTo(480, 544);
    
     
@@ -368,7 +370,7 @@ DK.play('play1')
   
 
   //  Player physics properties. Give the little guy a slight bounce.
-/*
+
   const debugGraphics = this.add.graphics().setAlpha(0.75);
   Platforms.renderDebug(debugGraphics, {
     tileColor: null, // Color of non-colliding tiles
@@ -382,15 +384,20 @@ DK.play('play1')
     collidingTileColor: new Phaser.Display.Color(123, 194, 78, 255), // Color of colliding tiles
     //faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
   });
-*/
-  //bg.setOrigin(0, 0);
 
-	
+  //bg.setOrigin(0, 0);
+  this.physics.add.collider(mario, Platforms);
+  Ladders.setTileIndexCallback(257, climbLadder, this);
+  // Add an overlap check for player and coins
+
+ this.physics.add.overlap(mario, Ladders);
+ 
   //this.physics.add.collider(Ladders, mario);
   this.physics.add.collider(mario, Enemy,hitBomb,null,this);
   cursors = this.input.keyboard.createCursorKeys();
 
-  this.physics.add.collider(mario, Platforms);
+
+ // this.physics.add.collider(mario, Ladders);
   this.physics.add.collider(DK, Ladders);
   this.physics.add.collider(Princess, Platforms);
   this.physics.add.collider(DK, Platforms);
@@ -409,14 +416,30 @@ function damageEnemy(enemy, bullet) {
       enemy.receiveDamage(BULLET_DAMAGE);
   }
 }
+function climbLadder(sprite, tile) {
 
+  if (cursors.up.isDown) {
+    mario.setVelocity(-100);
+
+    mario.anims.play('left', true);
+  }
+    //mario.anims.play('hit', true);
+  
+  //mario.setScale(20, 2);
+  //this.physics.add.overlap(mario, Platforms);
+  console.log("in here");
+  
+  
+  return false;
+  
+  }
 function hitBomb (mario, Enemy)
 {
     this.physics.pause();
 
     mario.setTint(0xff0000);
 
-    player.anims.play('hit');
+    mario.anims.play('hit');
 
     gameOver = true;
 }
